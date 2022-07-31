@@ -27,8 +27,7 @@ def plot_sdri(
     width=3,
     marker_size=12,
 ):
-    x = data["sdri"]
-    y = data["times"]
+    x, y = data["times"], data["sdri"]
 
     fig.add_trace(
         go.Scatter(
