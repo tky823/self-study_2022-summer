@@ -1,6 +1,9 @@
 import seaborn as sns
 import plotly.graph_objects as go
 
+symbols = {"IP1": "circle", "IP2": "square", "ISS1": "triangle-up", "ISS2": "x"}
+dashes = {2: None, 3: "dot"}
+
 
 def build_colorpalette(palette, n_colors):
     palette = sns.color_palette(palette, n_colors)
