@@ -5,8 +5,17 @@ import scipy.signal as ss
 from mir_eval.separation import bss_eval_sources
 from ssspy.algorithm import projection_back
 
+
 class SDRiReporter:
-    def __init__(self, waveform_src_img, n_fft=4096, hop_length=2048, window="hann", reference_id=0, save_freq=10):
+    def __init__(
+        self,
+        waveform_src_img,
+        n_fft=4096,
+        hop_length=2048,
+        window="hann",
+        reference_id=0,
+        save_freq=10,
+    ):
         self.waveform_src_img = waveform_src_img
 
         self.n_fft, self.hop_length = n_fft, hop_length
@@ -32,16 +41,27 @@ class SDRiReporter:
 
             if method.algorithm_spatial in ["IP", "IP1", "IP2"]:
                 spectrogram_mix, demix_filter = method.input, method.demix_filter
-                spectrogram_est = method.separate(spectrogram_mix, demix_filter=demix_filter)
+                spectrogram_est = method.separate(
+                    spectrogram_mix, demix_filter=demix_filter
+                )
             else:
                 spectrogram_mix, spectrogram_est = method.input, method.output
 
-            spectrogram_est = projection_back(spectrogram_est, reference=spectrogram_mix, reference_id=reference_id)
+            spectrogram_est = projection_back(
+                spectrogram_est, reference=spectrogram_mix, reference_id=reference_id
+            )
 
-            _, waveform_est = ss.istft(spectrogram_est, window=window, nperseg=n_fft, noverlap=n_fft-hop_length)
+            _, waveform_est = ss.istft(
+                spectrogram_est,
+                window=window,
+                nperseg=n_fft,
+                noverlap=n_fft - hop_length,
+            )
             waveform_est = waveform_est[..., :n_samples]
 
-            sdr_est, _, _, _ = bss_eval_sources(self.waveform_src_img[reference_id], waveform_est)
+            sdr_est, _, _, _ = bss_eval_sources(
+                self.waveform_src_img[reference_id], waveform_est
+            )
 
             if not hasattr(method, "sdr_mix"):
                 method.sdr_mix = sdr_est
