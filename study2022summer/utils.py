@@ -1,4 +1,6 @@
 import seaborn as sns
+import plotly.graph_objects as go
+
 
 def build_colorpalette(palette, n_colors):
     palette = sns.color_palette(palette, n_colors)
@@ -10,3 +12,31 @@ def build_colorpalette(palette, n_colors):
         palette_plotly.append(rgb)
 
     return palette_plotly
+
+
+def plot_sdri(
+    fig,
+    data,
+    symbol="circle",
+    dash=None,
+    label="",
+    color="black",
+    width=3,
+    marker_size=12,
+):
+    x = data["sdri"]
+    y = data["times"]
+
+    fig.add_trace(
+        go.Scatter(
+            x=x,
+            y=y,
+            mode="lines+markers",
+            name=label,
+            marker={
+                "size": marker_size,
+                "symbol": symbol,
+            },
+            line={"color": color, "width": width, "dash": dash},
+        )
+    )
