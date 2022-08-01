@@ -15,6 +15,7 @@ class SDRiReporter:
         window="hann",
         reference_id=0,
         save_freq=10,
+        offset_time=0,
     ):
         self.waveform_src_img = waveform_src_img
 
@@ -24,6 +25,7 @@ class SDRiReporter:
         self.n_samples = self.waveform_src_img.shape[-1]
 
         self.save_freq = save_freq
+        self.offset_time = offset_time
         self.iter_idx = 0
 
     def __call__(self, method):
@@ -88,6 +90,8 @@ class SDRiReporter:
             loss_time_end = time.perf_counter()
             self.loss_time += loss_time_end - loss_time_start
 
-            method.times.append(loss_time_end - self.start - self.loss_time)
+            method.times.append(
+                loss_time_end - self.start - self.loss_time + self.offset_time
+            )
 
         self.iter_idx += 1
