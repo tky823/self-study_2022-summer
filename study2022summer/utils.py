@@ -42,3 +42,11 @@ def plot_sdri(
             line={"color": color, "width": width, "dash": dash},
         )
     )
+
+
+def box_plot_sdri(
+    fig,
+    data,
+    label="",
+):
+    fig.add_trace(go.Box(y=data, name=label))
