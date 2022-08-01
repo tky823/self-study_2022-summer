@@ -137,7 +137,9 @@ def download_mird(root=".data/MIRD", n_sources=3, degrees=None, channels=None):
     if not os.path.exists(os.path.join(root, template_rir_name.format(0.16, 0))):
         shutil.unpack_archive(zip_path, root)
 
-    npz_path = os.path.join(root, "MIRD-{}ch.npz".format(n_channels))
+    degrees_name = "-".join([str(degree) for degree in degrees])
+    channels_name = "-".join([str(channel) for channel in channels])
+    npz_path = os.path.join(root, "MIRD_{}_{}.npz".format(degrees_name, channels_name))
 
     assert n_channels == n_sources, "Mixing system should be determined."
 
