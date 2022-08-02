@@ -7,7 +7,7 @@ import scipy.signal as ss
 from scipy.io import wavfile, loadmat
 
 sisec2010_tags = ["dev1_female3", "dev1_female4"]
-cmu_arctic_all_tags = []
+cmu_arctic_all_tags = ["awb", "bdl", "clb", "jmk", "ksp", "rms", "slt"]
 
 
 def download_data(
