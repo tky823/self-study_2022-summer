@@ -16,7 +16,7 @@ def download_data(
     cmu_arctic_tags=["awb", "bdl", "clb"],
     degrees=[0, 15, 345, 30, 330, 45, 315, 60, 300, 75, 285, 90, 270],
     channels=[3, 4, 2, 5, 1, 6, 0, 7],
-    max_samples=64000,
+    max_samples=48000,
 ):
     n_sources = len(cmu_arctic_tags)
 
@@ -25,8 +25,10 @@ def download_data(
             cmu_arctic_tag in cmu_arctic_all_tags
         ), "Choose cmu_arctic_tag from {}".format(cmu_arctic_all_tags)
 
-    sisec2010_npz_path = download_cmu_arctic(root=cmu_arctic_root, tags=cmu_arctic_tags)
-    sisec2010_npz = np.load(sisec2010_npz_path)
+    cmu_arctic_npz_path = download_cmu_arctic(
+        root=cmu_arctic_root, tags=cmu_arctic_tags
+    )
+    cmu_arctic_npz = np.load(cmu_arctic_npz_path)
 
     mird_npz_path = download_mird(
         root=mird_root, n_sources=n_sources, degrees=degrees, channels=channels
@@ -37,7 +39,11 @@ def download_data(
 
     for src_idx in range(n_sources):
         key = "src_{}".format(src_idx + 1)
-        waveform_src = sisec2010_npz[key][:max_samples]
+        max_samples = min(len(cmu_arctic_npz[key]), max_samples)
+
+    for src_idx in range(n_sources):
+        key = "src_{}".format(src_idx + 1)
+        waveform_src = cmu_arctic_npz[key][:max_samples]
         n_samples = len(waveform_src)
         _waveform_src_img = []
 
