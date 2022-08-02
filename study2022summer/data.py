@@ -7,24 +7,25 @@ import scipy.signal as ss
 from scipy.io import wavfile, loadmat
 
 sisec2010_tags = ["dev1_female3", "dev1_female4"]
+cmu_arctic_all_tags = []
 
 
 def download_data(
-    sisec2010_root=".data/SiSEC2010",
+    cmu_arctic_root=".data/cmu_arctic",
     mird_root=".data/MIRD",
-    n_sources=3,
-    sisec2010_tag="dev1_female3",
+    cmu_arctic_tags=["awb", "bdl", "clb"],
     degrees=[0, 15, 345, 30, 330, 45, 315, 60, 300, 75, 285, 90, 270],
     channels=[3, 4, 2, 5, 1, 6, 0, 7],
-    max_samples=160000,
+    max_samples=64000,
 ):
-    assert sisec2010_tag in sisec2010_tags, "Choose sisec2010_tag from {}".format(
-        sisec2010_tags
-    )
+    n_sources = len(cmu_arctic_tags)
 
-    sisec2010_npz_path = download_sisec2010(
-        root=sisec2010_root, n_sources=n_sources, tag=sisec2010_tag
-    )
+    for cmu_arctic_tag in cmu_arctic_tags:
+        assert (
+            cmu_arctic_tag in cmu_arctic_all_tags
+        ), "Choose cmu_arctic_tag from {}".format(cmu_arctic_all_tags)
+
+    sisec2010_npz_path = download_cmu_arctic(root=cmu_arctic_root, tags=cmu_arctic_tags)
     sisec2010_npz = np.load(sisec2010_npz_path)
 
     mird_npz_path = download_mird(
