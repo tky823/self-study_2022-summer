@@ -97,6 +97,56 @@ def download_sisec2010(root=".data/SiSEC2010", n_sources=3, tag="dev1_female3"):
     return npz_path
 
 
+def download_cmu_arctic(root=".data/cmu_arctic", tags=["awb", "bdl", "clb"]):
+    sample_rate = 16000
+    n_channels = n_sources = len(tags)
+
+    os.makedirs(root, exist_ok=True)
+
+    for tag in tags:
+        filename = "cmu_us_{}_arctic-0.95-release.tar.bz2".format(tag)
+        url = "http://festvox.org/cmu_arctic/cmu_arctic/packed/{}".format(filename)
+        zip_path = os.path.join(root, filename)
+
+        if not os.path.exists(zip_path):
+            urllib.request.urlretrieve(url, zip_path)
+
+        if not os.path.exists(
+            os.path.join(root, "cmu_us_{}_arctic".format(tag), "wav")
+        ):
+            shutil.unpack_archive(zip_path, root)
+
+    source_paths = []
+
+    for tag_idx, tag in enumerate(tags):
+        source_path = os.path.join(
+            root,
+            "cmu_us_{}_arctic".format(tag),
+            "wav",
+            "arctic_a{:04d}.wav".format(tag_idx + 1),
+        )
+        source_paths.append(source_path)
+
+    npz_path = os.path.join(root, "cmu_arctic_{}.npz".format("-".join(tags)))
+
+    if not os.path.exists(npz_path):
+        dry_sources = {}
+
+        for src_idx, source_path in enumerate(source_paths):
+            _, data = wavfile.read(source_path)  # 16 bits
+            dry_sources["src_{}".format(src_idx + 1)] = data / 2**15
+
+        np.savez(
+            npz_path,
+            sample_rate=sample_rate,
+            n_sources=n_sources,
+            n_channels=n_channels,
+            **dry_sources
+        )
+
+    return npz_path
+
+
 def download_mird(root=".data/MIRD", n_sources=3, degrees=None, channels=None):
     filename = (
         "Impulse_response_Acoustic_Lab_Bar-Ilan_University__"
