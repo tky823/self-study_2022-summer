@@ -41,7 +41,7 @@ class SDRiReporter:
         if self.iter_idx % self.save_freq == 0:
             loss_time_start = time.perf_counter()
 
-            if method.algorithm_spatial in ["IP", "IP1", "IP2"]:
+            if method.spatial_algorithm in ["IP", "IP1", "IP2"]:
                 spectrogram_mix, demix_filter = method.input, method.demix_filter
                 spectrogram_est = method.separate(
                     spectrogram_mix, demix_filter=demix_filter
