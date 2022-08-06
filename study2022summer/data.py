@@ -7,7 +7,26 @@ import scipy.signal as ss
 from scipy.io import wavfile, loadmat
 
 sisec2010_tags = ["dev1_female3", "dev1_female4"]
-cmu_arctic_all_tags = ["awb", "bdl", "clb", "jmk", "ksp", "rms", "slt"]
+cmu_arctic_all_tags = [
+    "aew",
+    "ahw",
+    "aup",
+    "awb",
+    "axb",
+    "bdl",
+    "clb",
+    "eey",
+    "fem",
+    "gka",
+    "jmk",
+    "ksp",
+    "ljm",
+    "lnh",
+    "rms",
+    "rxr",
+    "slp",
+    "slt",
+]
 
 
 def download_data(
@@ -111,7 +130,7 @@ def download_cmu_arctic(root=".data/cmu_arctic", tags=["awb", "bdl", "clb"]):
     os.makedirs(root, exist_ok=True)
 
     for tag in tags:
-        filename = "cmu_us_{}_arctic-0.95-release.tar.bz2".format(tag)
+        filename = "cmu_us_{}_arctic.tar.bz2".format(tag)
         url = "http://festvox.org/cmu_arctic/cmu_arctic/packed/{}".format(filename)
         zip_path = os.path.join(root, filename)
 
