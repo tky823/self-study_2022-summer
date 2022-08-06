@@ -131,7 +131,7 @@ def download_cmu_arctic(root=".data/cmu_arctic", tags=["awb", "bdl", "clb"]):
 
     for tag in tags:
         filename = "cmu_us_{}_arctic.tar.bz2".format(tag)
-        url = "http://festvox.org/cmu_arctic/cmu_arctic/packed/{}".format(filename)
+        url = "http://festvox.org/cmu_arctic/packed/{}".format(filename)
         zip_path = os.path.join(root, filename)
 
         if not os.path.exists(zip_path):
