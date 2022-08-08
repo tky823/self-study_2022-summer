@@ -49,28 +49,7 @@ class SDRiReporter:
             else:
                 spectrogram_mix, spectrogram_est = method.input, method.output
 
-            spectrogram_est = projection_back(
-                spectrogram_est, reference=spectrogram_mix, reference_id=reference_id
-            )
-
-            _, waveform_est = ss.istft(
-                spectrogram_est,
-                window=window,
-                nperseg=n_fft,
-                noverlap=n_fft - hop_length,
-            )
-            waveform_est = waveform_est[..., :n_samples]
-
-            sdr_est, _, _, _ = bss_eval_sources(
-                self.waveform_src_img[reference_id], waveform_est
-            )
-
             if not hasattr(method, "sdr_mix"):
-                spectrogram_mix = projection_back(
-                    spectrogram_mix,
-                    reference=spectrogram_mix,
-                    reference_id=reference_id,
-                )
                 _, waveform_mix = ss.istft(
                     spectrogram_mix,
                     window=window,
@@ -81,6 +60,25 @@ class SDRiReporter:
 
                 method.sdr_mix, _, _, _ = bss_eval_sources(
                     self.waveform_src_img[reference_id], waveform_mix
+                )
+                sdr_est = method.sdr_mix
+            else:
+                spectrogram_est = projection_back(
+                    spectrogram_est,
+                    reference=spectrogram_mix,
+                    reference_id=reference_id,
+                )
+
+                _, waveform_est = ss.istft(
+                    spectrogram_est,
+                    window=window,
+                    nperseg=n_fft,
+                    noverlap=n_fft - hop_length,
+                )
+                waveform_est = waveform_est[..., :n_samples]
+
+                sdr_est, _, _, _ = bss_eval_sources(
+                    self.waveform_src_img[reference_id], waveform_est
                 )
 
             sdri = np.mean(sdr_est - method.sdr_mix)
