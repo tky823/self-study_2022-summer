@@ -41,6 +41,8 @@ class SDRiReporter:
         if self.iter_idx % self.save_freq == 0:
             loss_time_start = time.perf_counter()
 
+            waveform_src_img = self.waveform_src_img[reference_id]
+
             if method.spatial_algorithm in ["IP", "IP1", "IP2"]:
                 spectrogram_mix, demix_filter = method.input, method.demix_filter
                 spectrogram_est = method.separate(
@@ -50,7 +52,7 @@ class SDRiReporter:
                 spectrogram_mix, spectrogram_est = method.input, method.output
 
             if not hasattr(method, "sdr_mix"):
-                n_sources = self.waveform_src_img.shape[0]
+                n_sources = waveform_src_img.shape[0]
 
                 _, waveform_mix = ss.istft(
                     spectrogram_mix,
@@ -61,10 +63,10 @@ class SDRiReporter:
                 waveform_mix = waveform_mix[reference_id, :n_samples]
                 waveform_mix = np.tile(waveform_mix, (n_sources, 1))
 
-                method.sdr_mix, _, _, _ = bss_eval_sources(
-                    self.waveform_src_img[reference_id], waveform_mix
+                sdr_est, _, _, _ = bss_eval_sources(
+                    waveform_src_img, waveform_mix, compute_permutation=False
                 )
-                sdr_est = method.sdr_mix
+                method.sdr_mix = sdr_est
             else:
                 spectrogram_est = projection_back(
                     spectrogram_est,
@@ -80,9 +82,7 @@ class SDRiReporter:
                 )
                 waveform_est = waveform_est[..., :n_samples]
 
-                sdr_est, _, _, _ = bss_eval_sources(
-                    self.waveform_src_img[reference_id], waveform_est
-                )
+                sdr_est, _, _, _ = bss_eval_sources(waveform_src_img, waveform_est)
 
             sdri = np.mean(sdr_est - method.sdr_mix)
 
