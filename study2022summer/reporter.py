@@ -50,13 +50,16 @@ class SDRiReporter:
                 spectrogram_mix, spectrogram_est = method.input, method.output
 
             if not hasattr(method, "sdr_mix"):
+                n_sources = self.waveform_src_img.shape[0]
+
                 _, waveform_mix = ss.istft(
                     spectrogram_mix,
                     window=window,
                     nperseg=n_fft,
                     noverlap=n_fft - hop_length,
                 )
-                waveform_mix = waveform_mix[..., :n_samples]
+                waveform_mix = waveform_mix[reference_id, :n_samples]
+                waveform_mix = np.tile(waveform_mix, (n_sources, 1))
 
                 method.sdr_mix, _, _, _ = bss_eval_sources(
                     self.waveform_src_img[reference_id], waveform_mix
