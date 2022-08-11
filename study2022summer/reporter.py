@@ -54,12 +54,6 @@ class SDRiReporter:
             if not hasattr(method, "sdr_mix"):
                 n_sources = waveform_src_img.shape[0]
 
-                spectrogram_mix = projection_back(
-                    spectrogram_mix,
-                    reference=spectrogram_mix,
-                    reference_id=reference_id,
-                )
-
                 _, waveform_mix = ss.istft(
                     spectrogram_mix,
                     window=window,
