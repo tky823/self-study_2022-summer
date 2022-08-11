@@ -66,7 +66,7 @@ class SDRiReporter:
                     nperseg=n_fft,
                     noverlap=n_fft - hop_length,
                 )
-                waveform_mix = waveform_mix[..., :n_samples]
+                waveform_mix = waveform_mix[reference_id, :n_samples]
                 waveform_mix = np.tile(waveform_mix, (n_sources, 1))
 
                 sdr_est, _, _, _ = bss_eval_sources(
